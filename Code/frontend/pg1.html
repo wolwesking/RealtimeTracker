@@ -12,7 +12,7 @@
 </body>
 <script>
     const currentURL = window.location.href;
-    const referrerURL = document.referrer;
+    let referrerURL = document.referrer;
     const userAgent = navigator.userAgent;
     const timestamp = new Date();
 
@@ -20,22 +20,45 @@
     const urlParams = new URLSearchParams(window.location.search);
     const utmSource = urlParams.get("utm_source");
     const utmMedium = urlParams.get("utm_medium");
-
+    if (referrerURL === '')
+    {
+        referrerURL = null;
+    }
     
     // Printing
 
     console.log(`currentURL: ${currentURL}`);
-    if (referrerURL === '')
-    {
-        console.log(`referrerURL: empty`);
-    }
-    else
-    {
-        console.log(`referrerURL: ${referrerURL}`);
-    }
+    console.log(`referrerURL: ${referrerURL}`);
     console.log(`userAgent: ${userAgent}`);
     console.log(`utmSource: ${utmSource}`);
     console.log(`utmMedium: ${utmMedium}`);
     console.log(`timestamp: ${timestamp}`);
+
+    const dataToSend = {
+        currentURL,
+        referrerURL,
+        userAgent,
+        utmSource,
+        utmMedium,
+        timestamp
+    };
+
+    // TODO write original domain of VPS server in this style:
+    // https://VPsServerDomain.com/user-view
+    fetch('http://localhost:3000/user-view', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataToSend)
+        })
+          .then(response => response.json())
+          .then(result => {
+            console.log('Data sent to the server:', result);
+          })
+          .catch(error => {
+            console.error('Error sending data to the server:', error);
+    });
+
   </script>
 </html>
