@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Page one
+    <br>
+    <a href="./index.html">Back</a>
+</body>
+<script>
+    const currentURL = window.location.href;
+    const referrerURL = document.referrer;
+    const userAgent = navigator.userAgent;
+    const timestamp = new Date();
+
+    // URL commands
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get("utm_source");
+    const utmMedium = urlParams.get("utm_medium");
+
+    
+    // Printing
+
+    console.log(`currentURL: ${currentURL}`);
+    if (referrerURL === '')
+    {
+        console.log(`referrerURL: empty`);
+    }
+    else
+    {
+        console.log(`referrerURL: ${referrerURL}`);
+    }
+    console.log(`userAgent: ${userAgent}`);
+    console.log(`utmSource: ${utmSource}`);
+    console.log(`utmMedium: ${utmMedium}`);
+    console.log(`timestamp: ${timestamp}`);
+  </script>
+</html>
