@@ -25,16 +25,9 @@
         referrerURL = null;
     }
     
-    // Printing
-
-    console.log(`currentURL: ${currentURL}`);
-    console.log(`referrerURL: ${referrerURL}`);
-    console.log(`userAgent: ${userAgent}`);
-    console.log(`utmSource: ${utmSource}`);
-    console.log(`utmMedium: ${utmMedium}`);
-    console.log(`timestamp: ${timestamp}`);
 
     const dataToSend = {
+        type: 'clientJoin',
         currentURL,
         referrerURL,
         userAgent,
@@ -46,8 +39,6 @@
     // TODO write original domain of VPS server
     const socket = new WebSocket('ws://localhost:8082'); 
 
-    // TODO write original domain of VPS server in this style:
-    // https://VPsServerDomain.com/user-view
     socket.addEventListener('open', e => {
       socket.send(JSON.stringify(dataToSend));
     })

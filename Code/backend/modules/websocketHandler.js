@@ -1,20 +1,20 @@
 const viewCounter = require("../modules/userCounter");
 
-const users = new Map();
-
 function init(server, WebSocket) {
   server.on("connection", (ws) => {
+    // Increment the view counter
     viewCounter.incrementCounter();
-    let data;
+
     const currentCount = viewCounter.getCounter();
 
     ws.on("message", (message) => {
-      const mgs = JSON.parse(message);
-      data = {
-        mgs,
+      const msg = JSON.parse(message);
+      const data = {
+        msg,
         currentCount,
       };
 
+      // Send data to all connected clients
       server.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           // Convert the JSON object back to a string before sending
@@ -24,16 +24,23 @@ function init(server, WebSocket) {
     });
 
     ws.on("close", () => {
+      // Decrement the view counter
       viewCounter.decrementCounter();
       const newCount = viewCounter.getCounter();
+      const newData = {
+        type: 'count',
+        currentCount: newCount,
+      }
+      // Send the updated count to all clients
       server.clients.forEach((client) => {
-        client.send(JSON.stringify(newCount));
+        if(client.protocol === 'dashboard')
+          client.send(JSON.stringify(newData));
       });
     });
   });
 }
 
-function updateCounter() {}
+// You can add your updateCounter function here if needed
 
 module.exports = {
   init,

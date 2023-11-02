@@ -2,20 +2,105 @@
 <html>
   <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="./stylesheets/styles.css" />
+    <link
+      rel="stylesheet"
+      href="./stylesheets/styles.css"
+    />
   </head>
   <body>
+    <!-- TEMPLATE -->
+    <template id="userTemplate">
+      <tr>
+        <td class="currentURL"></td>
+        <td class="refferURL"></td>
+        <td class="timestamp"></td>
+        <td class="utm_m"></td>
+        <td class="utm_s"></td>
+        <td class="userAgent"></td>
+      </tr>
+    </template>
+    <!-- END TEMPLATE -->
     <div id="wrapper">
       <h1 class="text-xl">Dashboard</h1>
-      <div id="discplayable-data"></div>
-      <div id="counter"></div>
+      <div id="counter">
+        The current count is <span id="userCount">no data</span>
+      </div>
+      <div id="list">
+        <table>
+          <thead>
+            <tr>
+              <th>Current url</th>
+              <th>Reffer url</th>
+              <th>Timestamp</th>
+              <th>Utm medium</th>
+              <th>Utm source</th>
+              <th>User agent</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
     </div>
   </body>
   <script>
-    const socket = new WebSocket('ws://localhost:8082'); 
-    socket.onmessage = event => {
-      let data = event.data;
-      document.getElementById('discplayable-data').innerHTML = data;
+    // Connect to socket
+    const socket = new WebSocket("ws://localhost:8082", "dashboard");
+
+    // Security auth
+
+
+    // Add message
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        // Set count of users, regardless of the type of the message
+        updateUserCount(data.currentCount);
+
+        if (data.msg && data.msg.type !== undefined && data.msg.type === "clientJoin") {
+          addUser(
+            data.msg.currentURL,
+            data.msg.referrerURL,
+            data.msg.timestamp,
+            data.msg.utmMedium,
+            data.msg.utmSource,
+            data.msg.userAgent
+          );
+        }
+      } catch (error) {
+        console.error("Error processing message:", error);
+      }
+    };
+
+    // Updates the DOM
+    function updateUserCount(newCount) {
+      const userCountElement = document.getElementById("userCount");
+      userCountElement.innerText = newCount || "no data";
+    }
+
+    // Updates the DOM and refreshes the list in real-time
+    function addUser(
+      currentURL,
+      referrerURL,
+      timestamp,
+      utmMedium,
+      utmSource,
+      userAgent
+    ) {
+      const rowTemplate = document.getElementById("userTemplate").content;
+      const tableBody = document.getElementById("tableBody");
+
+      // Clone and update the DOM
+      const newRow = document.importNode(rowTemplate, true);
+      newRow.querySelector(".currentURL").textContent = currentURL;
+      newRow.querySelector(".refferURL").textContent = referrerURL;
+      newRow.querySelector(".timestamp").textContent = timestamp;
+      newRow.querySelector(".utm_m").textContent = utmMedium || "null";
+      newRow.querySelector(".utm_s").textContent = utmSource || "null";
+      newRow.querySelector(".userAgent").textContent = userAgent;
+
+      // Add to the DOM
+      tableBody.appendChild(newRow);
     }
   </script>
 </html>
