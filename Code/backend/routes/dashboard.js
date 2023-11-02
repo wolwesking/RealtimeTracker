@@ -3,7 +3,6 @@ const router = express.Router();
 const view = require('../modules/userCounter')
 
 /* GET home page. */
-// TODO, do the realtime dashboard
 /*
   Panels:
   - log of activities
@@ -13,8 +12,6 @@ const view = require('../modules/userCounter')
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' }); 
 });
-
-// TODO secutiry websocket connection.
 
 router.post('/', )
 
