@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="./stylesheets/styles.css" />
   </head>
   <body>
-    <div class="">
-      <h1><%= title %></h1>
-      <p>Welcome to <%= title %></p>
+    <div id="wrapper">
+      <h1 class="text-xl">Dashboard</h1>
+      <div id="discplayable-data"></div>
+      <div id="counter"></div>
     </div>
   </body>
+  <script>
+    const socket = new WebSocket('ws://localhost:8082'); 
+    socket.onmessage = event => {
+      let data = event.data;
+      document.getElementById('discplayable-data').innerHTML = data;
+    }
+  </script>
 </html>

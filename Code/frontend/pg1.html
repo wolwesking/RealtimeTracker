@@ -43,22 +43,13 @@
         timestamp
     };
 
+    // TODO write original domain of VPS server
+    const socket = new WebSocket('ws://localhost:8082'); 
+
     // TODO write original domain of VPS server in this style:
     // https://VPsServerDomain.com/user-view
-    fetch('http://localhost:3000/user-view', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(dataToSend)
-        })
-          .then(response => response.json())
-          .then(result => {
-            console.log('Data sent to the server:', result);
-          })
-          .catch(error => {
-            console.error('Error sending data to the server:', error);
-    });
-
+    socket.addEventListener('open', e => {
+      socket.send(JSON.stringify(dataToSend));
+    })
   </script>
 </html>

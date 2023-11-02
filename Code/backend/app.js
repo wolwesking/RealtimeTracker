@@ -4,12 +4,10 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const cors = require("cors");
 
 // Rooter imports
 const indexRouter = require("./routes/index");
 const dashboardRouter = require("./routes/dashboard");
-const userRouter = require("./routes/user-view");
 
 // App init
 const app = express();
@@ -24,12 +22,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
 
 // Routes
 app.use("/", indexRouter);
 app.use("/dashboard", dashboardRouter);
-app.use("/user-view", userRouter);
+
+
+// Error handling
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
