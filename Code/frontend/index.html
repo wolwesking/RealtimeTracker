@@ -9,6 +9,23 @@
     Welcome to our site
     <br>
     <a href="./pg1.html">pg1</a>
-    <script src="./main.js"></script>
   </body>
+  <script>
+    const currentURL = window.location.href;
+    const referrerURL = document.referrer;
+    const userAgent = navigator.userAgent;
+    const timestamp = new Date();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get("utm_source");
+    const utmMedium = urlParams.get("utm_medium");
+
+    console.log(`currentURL: ${currentURL}`);
+    console.log(`referrerURL: ${referrerURL}`);
+    console.log(`userAgent: ${userAgent}`);
+    console.log(`utmSource: ${utmSource}`);
+    console.log(`utmMedium: ${utmMedium}`);
+    console.log(`timestamp: ${timestamp}`);
+
+  </script>
 </html>
