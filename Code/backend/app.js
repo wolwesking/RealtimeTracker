@@ -8,6 +8,7 @@ const logger = require("morgan");
 // Rooter imports
 const indexRouter = require("./routes/index");
 const dashboardRouter = require("./routes/dashboard");
+const downloadRouter = require("./routes/download");
 
 // App init
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Routes
 app.use("/", indexRouter);
 app.use("/dashboard", dashboardRouter);
+app.use("/download", downloadRouter);
 
 
 // Error handling
