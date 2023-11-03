@@ -2,10 +2,7 @@
 <html>
   <head>
     <title>Dashboard</title>
-    <link
-      rel="stylesheet"
-      href="./stylesheets/styles.css"
-    />
+    <link rel="stylesheet" href="./stylesheets/styles.css" />
   </head>
   <body>
     <!-- TEMPLATE -->
@@ -39,7 +36,19 @@
               <th>Lead source name</th>
             </tr>
           </thead>
-          <tbody id="tableBody"></tbody>
+          <tbody id="tableBody">
+            <% data.forEach(function(entry) { %>
+              <tr>
+                <td class="currentURL"><%= entry.currentURL %></td>
+                <td class="refferURL"><%= entry.referrerURL || 'null' %></td>
+                <td class="timestamp"><%= entry.timestamp %></td>
+                <td class="utm_m"><%= entry.utmMedium || 'null' %></td>
+                <td class="utm_s"><%= entry.utmSource || 'null' %></td>
+                <td class="userAgent"><%= entry.userAgent %></td>
+                <td class="lsn"><%= entry.leadSourceName || 'null' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
         </table>
       </div>
     </div>
@@ -93,13 +102,12 @@
       // Clone and update the DOM
       const newRow = document.importNode(rowTemplate, true);
       newRow.querySelector(".currentURL").textContent = currentURL;
-      newRow.querySelector(".refferURL").textContent = referrerURL;
+      newRow.querySelector(".refferURL").textContent = referrerURL || 'null';
       newRow.querySelector(".timestamp").textContent = timestamp;
       newRow.querySelector(".utm_m").textContent = utmMedium || "null";
       newRow.querySelector(".utm_s").textContent = utmSource || "null";
       newRow.querySelector(".userAgent").textContent = userAgent;
       newRow.querySelector(".lsn").textContent = leadSourceName || "null";
-      
 
       // Add to the DOM
       tableBody.insertBefore(newRow, tableBody.firstChild);
