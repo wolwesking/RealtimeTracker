@@ -17,6 +17,7 @@
         <td class="utm_m"></td>
         <td class="utm_s"></td>
         <td class="userAgent"></td>
+        <td class="lsn"></td>
       </tr>
     </template>
     <!-- END TEMPLATE -->
@@ -35,6 +36,7 @@
               <th>Utm medium</th>
               <th>Utm source</th>
               <th>User agent</th>
+              <th>Lead source name</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -45,10 +47,6 @@
   <script>
     // Connect to socket
     const socket = new WebSocket("ws://localhost:8082", "dashboard");
-
-    // Security auth
-
-
     // Add message
     socket.onmessage = (event) => {
       try {
@@ -64,7 +62,8 @@
             data.msg.timestamp,
             data.msg.utmMedium,
             data.msg.utmSource,
-            data.msg.userAgent
+            data.msg.userAgent,
+            data.msg.leadSourceName,
           );
         }
       } catch (error) {
@@ -85,7 +84,8 @@
       timestamp,
       utmMedium,
       utmSource,
-      userAgent
+      userAgent,
+      leadSourceName
     ) {
       const rowTemplate = document.getElementById("userTemplate").content;
       const tableBody = document.getElementById("tableBody");
@@ -98,9 +98,11 @@
       newRow.querySelector(".utm_m").textContent = utmMedium || "null";
       newRow.querySelector(".utm_s").textContent = utmSource || "null";
       newRow.querySelector(".userAgent").textContent = userAgent;
+      newRow.querySelector(".lsn").textContent = leadSourceName || "null";
+      
 
       // Add to the DOM
-      tableBody.appendChild(newRow);
+      tableBody.insertBefore(newRow, tableBody.firstChild);
     }
   </script>
 </html>

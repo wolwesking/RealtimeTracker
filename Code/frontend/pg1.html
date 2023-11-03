@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     Page one
-    <br>
+    <br />
     <a href="./index.html">Back</a>
-</body>
-<script>
+  </body>
+  <script>
     const currentURL = window.location.href;
     let referrerURL = document.referrer;
     const userAgent = navigator.userAgent;
@@ -20,27 +20,33 @@
     const urlParams = new URLSearchParams(window.location.search);
     const utmSource = urlParams.get("utm_source");
     const utmMedium = urlParams.get("utm_medium");
-    if (referrerURL === '')
-    {
-        referrerURL = null;
+    if (referrerURL === "") {
+      referrerURL = null;
     }
-    
+
+    // Check for a meta tag with a specific name attribute
+    const metaTag = document.querySelector('meta[name="lead-source"]');
+    let leadSourceName;
+    if (metaTag) {
+      leadSourceName = metaTag.getAttribute("content");
+    }
 
     const dataToSend = {
-        type: 'clientJoin',
-        currentURL,
-        referrerURL,
-        userAgent,
-        utmSource,
-        utmMedium,
-        timestamp
+      type: "clientJoin",
+      currentURL,
+      referrerURL,
+      userAgent,
+      utmSource,
+      utmMedium,
+      timestamp,
+      leadSourceName
     };
 
     // write original domain of VPS server
-    const socket = new WebSocket('ws://localhost:8082'); 
+    const socket = new WebSocket("ws://localhost:8082");
 
-    socket.addEventListener('open', e => {
+    socket.addEventListener("open", (e) => {
       socket.send(JSON.stringify(dataToSend));
-    })
+    });
   </script>
 </html>
