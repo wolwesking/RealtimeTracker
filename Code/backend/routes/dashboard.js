@@ -10,7 +10,12 @@ const view = require('../modules/userCounter')
   - number of users count
 */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' }); 
+  const initData = 
+  {
+    views: view.getCounter(),
+
+  }
+  res.render('index', { title: 'Express', data: initData }); 
 });
 
 router.post('/', )

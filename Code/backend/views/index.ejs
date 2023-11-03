@@ -6,6 +6,7 @@
       rel="stylesheet"
       href="./stylesheets/styles.css"
     />
+    
   </head>
   <body>
     <!-- TEMPLATE -->
@@ -18,13 +19,16 @@
         <td class="utm_s"></td>
         <td class="userAgent"></td>
         <td class="lsn"></td>
+        <td class="visit"></td>
+        <td class="platform"></td>
+        <td class="country"></td>
       </tr>
     </template>
     <!-- END TEMPLATE -->
     <div id="wrapper">
-      <h1 class="text-xl">Dashboard</h1>
       <div id="counter">
-        The current count is <span id="userCount">no data</span>
+        <p>Right now</p>
+        <h1 id="userCount"><%= data.views %></h1>
       </div>
       <div id="list">
         <table>
@@ -37,6 +41,9 @@
               <th>Utm source</th>
               <th>User agent</th>
               <th>Lead source name</th>
+              <th>First visit</th>
+              <th>Platform</th>
+              <th>Country</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -64,13 +71,16 @@
             data.msg.utmSource,
             data.msg.userAgent,
             data.msg.leadSourceName,
+            data.msg.isFirstVisit,
+            data.msg.platform,
+            data.msg.country
           );
+          console.log(data.msg.country);
         }
       } catch (error) {
         console.error("Error processing message:", error);
       }
     };
-
     // Updates the DOM
     function updateUserCount(newCount) {
       const userCountElement = document.getElementById("userCount");
@@ -85,11 +95,13 @@
       utmMedium,
       utmSource,
       userAgent,
-      leadSourceName
+      leadSourceName,
+      isFirstVisit,
+      platformz,
+      country,
     ) {
       const rowTemplate = document.getElementById("userTemplate").content;
       const tableBody = document.getElementById("tableBody");
-
       // Clone and update the DOM
       const newRow = document.importNode(rowTemplate, true);
       newRow.querySelector(".currentURL").textContent = currentURL;
@@ -99,7 +111,9 @@
       newRow.querySelector(".utm_s").textContent = utmSource || "null";
       newRow.querySelector(".userAgent").textContent = userAgent;
       newRow.querySelector(".lsn").textContent = leadSourceName || "null";
-      
+      newRow.querySelector(".visit").textContent = isFirstVisit;
+      newRow.querySelector(".platform").textContent = platformz || "null";
+      newRow.querySelector(".country").textContent = country;
 
       // Add to the DOM
       tableBody.insertBefore(newRow, tableBody.firstChild);
