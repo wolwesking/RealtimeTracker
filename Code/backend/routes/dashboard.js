@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
       throw err;
     }
 
-    // Send the fetched data as JSON to the frontend
+    // Render the 'index' view and pass the fetched data as a variable
     res.render('index', { title: 'Express', data: rows });
   });
 });

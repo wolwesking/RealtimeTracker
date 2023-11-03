@@ -1,17 +1,18 @@
 const viewCounter = require("../modules/userCounter");
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require("sqlite3").verbose();
 
 // Create or open the SQLite database
-const db = new sqlite3.Database('./data/user.db', (err) => {
+const db = new sqlite3.Database("./data/user.db", (err) => {
   if (err) {
-    console.error('Error opening database:', err.message);
+    console.error("Error opening database:", err.message);
   } else {
-    console.log('Connected to the database.');
+    console.log("Connected to the database.");
   }
 });
 
 // Create the table if it doesn't exist
-db.run(`
+db.run(
+  `
   CREATE TABLE IF NOT EXISTS user_data (
     id INTEGER PRIMARY KEY,
     currentURL TEXT,
@@ -22,13 +23,15 @@ db.run(`
     timestamp TEXT,
     leadSourceName TEXT
   )
-`, (err) => {
-  if (err) {
-    console.error('Error creating table:', err.message);
-  } else {
-    console.log('Table created or already exists.');
+`,
+  (err) => {
+    if (err) {
+      console.error("Error creating table:", err.message);
+    } else {
+      console.log("Table created or already exists.");
+    }
   }
-});
+);
 
 function init(server, WebSocket) {
   server.on("connection", (ws) => {
@@ -42,7 +45,7 @@ function init(server, WebSocket) {
         currentCount,
       };
 
-      if (msg.type === 'clientJoin') {
+      if (msg.type === "clientJoin") {
         const {
           currentURL,
           referrerURL,
@@ -50,21 +53,40 @@ function init(server, WebSocket) {
           utmSource,
           utmMedium,
           timestamp,
-          leadSourceName
+          leadSourceName,
         } = msg;
 
-        const insertQuery = 'INSERT INTO user_data (currentURL, referrerURL, userAgent, utmSource, utmMedium, timestamp, leadSourceName) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        db.run(insertQuery, [currentURL, referrerURL, userAgent, utmSource, utmMedium, timestamp, leadSourceName], (err) => {
-          if (err) {
-            console.error('Error inserting data into the database:', err.message);
-          } else {
-            console.log('Data saved to the database.');
+        const insertQuery =
+          "INSERT INTO user_data (currentURL, referrerURL, userAgent, utmSource, utmMedium, timestamp, leadSourceName) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        db.run(
+          insertQuery,
+          [
+            currentURL,
+            referrerURL,
+            userAgent,
+            utmSource,
+            utmMedium,
+            timestamp,
+            leadSourceName,
+          ],
+          (err) => {
+            if (err) {
+              console.error(
+                "Error inserting data into the database:",
+                err.message
+              );
+            } else {
+              console.log("Data saved to the database.");
+            }
           }
-        });
+        );
       }
 
       server.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN && client.protocol === 'dashboard') {
+        if (
+          client.readyState === WebSocket.OPEN &&
+          client.protocol === "dashboard"
+        ) {
           client.send(JSON.stringify(data));
         }
       });
@@ -72,13 +94,17 @@ function init(server, WebSocket) {
 
     ws.on("close", () => {
       viewCounter.decrementCounter();
+      console.log('socket close');
       const newCount = viewCounter.getCounter();
       const newData = {
-        type: 'count',
+        type: "count",
         currentCount: newCount,
-      }
+      };
       server.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN && client.protocol === 'dashboard') {
+        if (
+          client.readyState === WebSocket.OPEN &&
+          client.protocol === "dashboard"
+        ) {
           client.send(JSON.stringify(newData));
         }
       });

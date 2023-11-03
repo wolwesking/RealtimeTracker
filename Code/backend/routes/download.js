@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
           worksheet.addRow(data);
         });
 
-        // Generate the Excel file
+        // Generate the Excel file and set response headers
         res.setHeader('Content-Type', 'application/vnd.openxmlformats');
         res.setHeader('Content-Disposition', 'attachment; filename=exported-data.xlsx');
         workbook.xlsx.write(res).then(() => res.end());
