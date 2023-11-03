@@ -1,40 +1,37 @@
-// Get current URL
 const currentURL = window.location.href;
+    let referrerURL = document.referrer;
+    const userAgent = navigator.userAgent;
+    const timestamp = new Date();
 
-// Get referrer URL, default to null if empty
-const referrerURL = document.referrer || null;
+    // URL commands
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get("utm_source");
+    const utmMedium = urlParams.get("utm_medium");
+    if (referrerURL === "") {
+      referrerURL = null;
+    }
 
-// Get user agent
-const userAgent = navigator.userAgent;
+    // Check for a meta tag with a specific name attribute
+    const metaTag = document.querySelector('meta[name="lead-source"]');
+    let leadSourceName;
+    if (metaTag) {
+      leadSourceName = metaTag.getAttribute("content");
+    }
 
-// Get current timestamp
-const timestamp = new Date();
+    const dataToSend = {
+      type: "clientJoin",
+      currentURL,
+      referrerURL,
+      userAgent,
+      utmSource,
+      utmMedium,
+      timestamp,
+      leadSourceName
+    };
 
-// Get URL parameters (query string values)
-const urlParams = new URLSearchParams(window.location.search);
-const utmSource = urlParams.get("utm_source");
-const utmMedium = urlParams.get("utm_medium");
+    // write original domain of VPS server
+    const socket = new WebSocket("ws://localhost:8082");
 
-// Get lead source name from the meta tag
-const metaTag = document.querySelector('meta[name="lead-source"]');
-const leadSourceName = metaTag ? metaTag.getAttribute("content") : null;
-
-// Create data object
-const dataToSend = {
-  type: "clientJoin",
-  currentURL,
-  referrerURL,
-  userAgent,
-  utmSource,
-  utmMedium,
-  timestamp,
-  leadSourceName
-};
-
-// Connect to WebSocket server
-const socket = new WebSocket("ws://localhost:8082");
-
-// Handle WebSocket connection
-socket.addEventListener("open", (e) => {
-  socket.send(JSON.stringify(dataToSend));
-});
+    socket.addEventListener("open", (e) => {
+      socket.send(JSON.stringify(dataToSend));
+    });

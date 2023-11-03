@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send(''); 
+  res.send('index'); // REMOVE DEV ONLY
 });
 
 module.exports = router;
