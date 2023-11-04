@@ -14,10 +14,11 @@ const utmTerm = urlParams.get('utm_term');
 const utmContent = urlParams.get('utm_content');
 
 // Check for a meta tag with a specific name attribute
-const metaTag = document.querySelector('meta[name="lead-source"]');
+const leadSourceInput = document.querySelector('input[name="lead_source"]');
 let leadSourceName;
-if (metaTag) {
-  leadSourceName = metaTag.getAttribute("content");
+if (leadSourceInput) {
+  // Access the value of the input field
+  leadSourceName = leadSourceInput.value;
 }
 
 // Check if they came back

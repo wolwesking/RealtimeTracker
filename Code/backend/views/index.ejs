@@ -2,11 +2,15 @@
 <html>
   <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="./stylesheets/overview.css" />
+        <link
+      rel="stylesheet"
+      href="./stylesheets/styles.css"
+    />
+    
   </head>
   <body>
     <!-- TEMPLATE -->
-    <!-- <template id="userTemplate">
+    <template id="userTemplate">
       <tr>
         <td class="currentURL"></td>
         <td class="refferURL"></td>
@@ -22,40 +26,14 @@
         <td class="platform"></td>
         <td class="country"></td>
       </tr>
-    </template> -->
+    </template>
     <!-- END TEMPLATE -->
-    <header>
-      <h1>Analytics</h1>
-      <div>
-        <p>USEREMAIL</p>
-        <a href="#">Logout</a>
-      </div>
-    </header>
     <div id="wrapper">
-      <div id="sideMenu">
-        <div>
-          <a href="/overview"><b>Overview</b></a>
-          <a href="#">Locations</a>
-          <a href="#">Trafix Sources</a>
-        </div>
+      <div id="counter">
+        <p>Right now</p>
+        <h1 id="userCount"><%= data.views %></h1>
       </div>
-      <div>
-        <h1 style="margin-left: 20px; margin-top: 10px; font-size: large">
-          Overview
-        </h1>
-        <div style="display: flex; margin-top: 20px">
-          <div id="counter">
-            <p>Right now</p>
-            <p style="font-size: 4rem"><%= data.views %></p>
-            <p style="font-size: small">active visitors on the site</p>
-
-            <div class="progress-bar">
-              <div class="bar" id="dynamic-bar"></div>
-            </div>
-          </div>
-        </div>
-        <div style="display: flex">asdf</div>
-         <div id="list">
+      <div id="list">
         <table>
           <thead>
             <tr>
@@ -77,7 +55,6 @@
           <tbody id="tableBody"></tbody>
         </table>
       </div>
-      </div>
     </div>
   </body>
   <script>
@@ -91,11 +68,7 @@
         // Set count of users, regardless of the type of the message
         updateUserCount(data.currentCount);
 
-        if (
-          data.msg &&
-          data.msg.type !== undefined &&
-          data.msg.type === "clientJoin"
-        ) {
+        if (data.msg && data.msg.type !== undefined && data.msg.type === "clientJoin") {
           addUser(
             data.msg.currentURL,
             data.msg.referrerURL,
@@ -137,7 +110,7 @@
       leadSourceName,
       isFirstVisit,
       platformz,
-      country
+      country,
     ) {
       const rowTemplate = document.getElementById("userTemplate").content;
       const tableBody = document.getElementById("tableBody");
@@ -160,12 +133,4 @@
       // Add to the DOM
       tableBody.insertBefore(newRow, tableBody.firstChild);
     }
-
-    const dynamicBar = document.getElementById("dynamic-bar");
-    const occupancyPercentage = 75; // Change this value as needed
-    const freePercentage = 100 - occupancyPercentage;
-    dynamicBar.style.width = `${occupancyPercentage}%`;
-    dynamicBar.style.backgroundColor = "#3498db"; // Blue for occupied
-    dynamicBar.style.borderRight = `${freePercentage}% solid #2ecc71`; // Green for free
   </script>
-</html>
