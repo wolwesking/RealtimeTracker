@@ -9,54 +9,158 @@
     
   </head>
   <body>
-    <!-- TEMPLATE -->
-    <template id="userTemplate">
-      <tr>
-        <td class="currentURL"></td>
-        <td class="refferURL"></td>
-        <td class="timestamp"></td>
-        <td class="utm_m"></td>
-        <td class="utm_s"></td>
-        <td class="utm_camp"></td>
-        <td class="utm_term"></td>
-        <td class="utm_cont"></td>
-        <td class="userAgent"></td>
-        <td class="lsn"></td>
-        <td class="visit"></td>
-        <td class="platform"></td>
-        <td class="country"></td>
-      </tr>
-    </template>
-    <!-- END TEMPLATE -->
+    <!-- PANEL -->
+    <header>
+      <h1>Dashboard</h1>
+      <div id="userInfo">
+        <p>User's email</p>
+        <a href="#">Logout</a>
+      </div>
+    </header>
+    <!-- WIDGETS -->
+
     <div id="wrapper">
-      <div id="counter">
-        <p>Right now</p>
-        <h1 id="userCount"><%= data.views %></h1>
-      </div>
-      <div id="list">
-        <table>
-          <thead>
-            <tr>
-              <th>Current url</th>
-              <th>Reffer url</th>
-              <th>Timestamp</th>
-              <th>Utm medium</th>
-              <th>Utm source</th>
-              <th>Utm campaign</th>
-              <th>Utm term</th>
-              <th>Utm content</th>
-              <th>User agent</th>
-              <th>Lead source name</th>
-              <th>First visit</th>
-              <th>Platform</th>
-              <th>Country</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+    <div class="widget" id="counter">
+      <p>Right Now</p>
+      <h1 id="currentCount">0</h1>
+      <p>active visitors on the site</p>
     </div>
+  
+    <div class="widget" id="widget2">
+      <h1>Top Active Pages:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Active Page</th>
+            <th>Active Visitors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add 10 rows here with data -->
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="widget" id="widget3">
+      <h1>Top Referrals:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Active Visitors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add 10 rows here with data -->
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- User by Device Widget -->
+    <div class="widget" id="widget4">
+      <h1>Users by Device Type:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Desktop</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>Mobile</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>Tablet</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- UTM Widgets -->
+    <div class="widget" id="widget5">
+      <h1>UTM Source:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>utm-name</th>
+            <th>sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add rows for UTM Source data here -->
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="widget" id="widget6">
+      <h1>UTM Medium:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>utm-name</th>
+            <th>sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add rows for UTM Medium data here -->
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="widget" id="widget7">
+      <h1>UTM Campaign:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>utm-name</th>
+            <th>sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add rows for UTM Campaign data here -->
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="widget" id="widget8">
+      <h1>UTM Term:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>utm-name</th>
+            <th>sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add rows for UTM Term data here -->
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="widget" id="widget9">
+      <h1>UTM Content:</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>utm-name</th>
+            <th>sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Add rows for UTM Content data here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
   </body>
+  
   <script>
     // Connect to socket
     const socket = new WebSocket("ws://localhost:8082", "dashboard");
