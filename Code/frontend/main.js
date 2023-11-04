@@ -9,9 +9,9 @@ let country = "";
 const urlParams = new URLSearchParams(window.location.search);
 const utmSource = urlParams.get("utm_source");
 const utmMedium = urlParams.get("utm_medium");
-if (referrerURL === "") {
-  referrerURL = null;
-}
+const utmCamp = urlParams.get('utm_campaign');
+const utmTerm = urlParams.get('utm_term');
+const utmContent = urlParams.get('utm_content');
 
 // Check for a meta tag with a specific name attribute
 const metaTag = document.querySelector('meta[name="lead-source"]');
@@ -58,14 +58,15 @@ fetch("http://ip-api.com/json/")
       userAgent,
       utmSource,
       utmMedium,
+      utmCamp,
+      utmTerm,
+      utmContent,
       timestamp,
       leadSourceName,
       isFirstVisit,
       platform,
       country,
     };
-    console.log(country);
-    // write original domain of VPS server
     const socket = new WebSocket("ws://localhost:8082");
 
     socket.addEventListener("open", (e) => {
