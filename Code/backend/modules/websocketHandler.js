@@ -13,6 +13,7 @@ function init(server, WebSocket) {
         msg,
         currentCount,
       };
+
       // Send data to all connected clients
       server.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
