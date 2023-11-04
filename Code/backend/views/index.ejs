@@ -22,10 +22,10 @@
     <div id="wrapper">
     <div class="widget" id="counter">
       <p>Right Now</p>
-      <h1 id="currentCount">0</h1>
+      <h1 id="currentCount"><%= data.userCount %></h1>
       <p>active visitors on the site</p>
     </div>
-  
+    
     <div class="widget" id="widget2">
       <h1>Top Active Pages:</h1>
       <table>
@@ -162,6 +162,14 @@
   </body>
   
   <script>
+
+    // TODO realtime functionalities for all widgets in file
+    // TODO create database and connect it with backend and frontend
+    // TODO add server logic to format this
+    // TODO create safe authentication
+    // TODO Database exporting as logs download
+
+
     // Connect to socket
     const socket = new WebSocket("ws://localhost:8082", "dashboard");
     // Add message
@@ -196,7 +204,7 @@
     };
     // Updates the DOM
     function updateUserCount(newCount) {
-      const userCountElement = document.getElementById("userCount");
+      const userCountElement = document.getElementById("currentCount");
       userCountElement.innerText = newCount || "no data";
     }
 
