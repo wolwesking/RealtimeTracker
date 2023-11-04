@@ -1,9 +1,23 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const view = require('../modules/userCounter')
 
-/* GET users listing. */
+/* GET home page. */
+/*
+  Panels:
+  - log of activities
+  - top list of different UTM
+  - number of users count
+*/
 router.get('/', function(req, res, next) {
-  res.send('index'); // REMOVE DEV ONLY
+  const initData = 
+  {
+    views: view.getCounter(),
+
+  }
+  res.render('auth', { title: 'Express', data: initData }); 
 });
+
+router.post('/', )
 
 module.exports = router;

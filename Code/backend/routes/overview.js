@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
     views: view.getCounter(),
 
   }
-  res.render('index', { title: 'Express', data: initData }); 
+  res.render('overview', { data: initData }); 
 });
 
 router.post('/', )
