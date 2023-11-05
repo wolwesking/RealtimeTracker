@@ -2,11 +2,7 @@
 <html>
   <head>
     <title>Dashboard</title>
-        <link
-      rel="stylesheet"
-      href="./stylesheets/styles.css"
-    />
-    
+    <link rel="stylesheet" href="./stylesheets/styles.css" />
   </head>
   <body>
     <!-- PANEL -->
@@ -20,155 +16,185 @@
     <!-- WIDGETS -->
 
     <div id="wrapper">
-    <div class="widget" id="counter">
-      <p>Right Now</p>
-      <h1 id="currentCount"><%= data.userCount %></h1>
-      <p>active visitors on the site</p>
-    </div>
-    
-    <div class="widget" id="widget2">
-      <h1>Top Active Pages:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Active Page</th>
-            <th>Active Visitors</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add 10 rows here with data -->
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="widget" id="widget3">
-      <h1>Top Referrals:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Source</th>
-            <th>Active Visitors</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add 10 rows here with data -->
-        </tbody>
-      </table>
-    </div>
-  
-    <!-- User by Device Widget -->
-    <div class="widget" id="widget4">
-      <h1>Users by Device Type:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Device</th>
-            <th>Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Desktop</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td>Mobile</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td>Tablet</td>
-            <td>0</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <!-- UTM Widgets -->
-    <div class="widget" id="widget5">
-      <h1>UTM Source:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>utm-name</th>
-            <th>sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add rows for UTM Source data here -->
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="widget" id="widget6">
-      <h1>UTM Medium:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>utm-name</th>
-            <th>sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add rows for UTM Medium data here -->
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="widget" id="widget7">
-      <h1>UTM Campaign:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>utm-name</th>
-            <th>sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add rows for UTM Campaign data here -->
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="widget" id="widget8">
-      <h1>UTM Term:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>utm-name</th>
-            <th>sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add rows for UTM Term data here -->
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="widget" id="widget9">
-      <h1>UTM Content:</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>utm-name</th>
-            <th>sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Add rows for UTM Content data here -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-  </body>
-  
-  <script>
+      <div class="widget" id="counter">
+        <p>Right Now</p>
+        <h1 id="currentCount"><%= data.userCount %></h1>
+        <p>active visitors on the site</p>
+      </div>
 
+      <div class="widget" id="widget2">
+        <h1>Top Active Pages:</h1>
+        <table id="activePage">
+          <thead>
+            <tr>
+              <th>Active Page</th>
+              <th>Active Visitors</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add 10 rows here with data -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget3">
+        <h1>Top Referrals:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Active Visitors</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add 10 rows here with data -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- User by Device Widget -->
+      <div class="widget" id="widget4">
+        <h1>Users by Device Type:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Desktop</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>Mobile</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>Tablet</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- UTM Widgets -->
+      <div class="widget" id="widget5">
+        <h1>UTM Source:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>utm-name</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Source data here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget6">
+        <h1>UTM Medium:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>utm-name</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Medium data here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget7">
+        <h1>UTM Campaign:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>utm-name</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Campaign data here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget8">
+        <h1>UTM Term:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>utm-name</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Term data here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget9">
+        <h1>UTM Content:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>utm-name</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Content data here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget10">
+        <h1>Country: </h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Content data here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="widget" id="widget11">
+        <h1>Lead source name:</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>source</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Content data here -->
+          </tbody>
+        </table>
+      </div>
+
+      
+    </div>
+  </body>
+
+  <script>
     // TODO realtime functionalities for all widgets in file
     // TODO create database and connect it with backend and frontend
     // TODO add server logic to format this
     // TODO create safe authentication
     // TODO Database exporting as logs download
-
 
     // Connect to socket
     const socket = new WebSocket("ws://localhost:8082", "dashboard");
@@ -181,7 +207,7 @@
         updateUserCount(data.currentCount);
 
         if (data.msg && data.msg.type !== undefined && data.msg.type === "clientJoin") {
-          addUser(
+          
             data.msg.currentURL,
             data.msg.referrerURL,
             data.msg.timestamp,
@@ -195,54 +221,105 @@
             data.msg.isFirstVisit,
             data.msg.platform,
             data.msg.country
-          );
-          console.log(data.msg.country);
+          
         }
       } catch (error) {
         console.error("Error processing message:", error);
       }
     };
-    // Updates the DOM
+​
+
+    // RIGHT NOW BLOCK
     function updateUserCount(newCount) {
       const userCountElement = document.getElementById("currentCount");
       userCountElement.innerText = newCount || "no data";
     }
+    // ENDBLOCK
 
-    // Updates the DOM and refreshes the list in real-time
-    function addUser(
-      currentURL,
-      referrerURL,
-      timestamp,
-      utmMedium,
-      utmSource,
-      utmCamp,
-      utmTerm,
-      utmCont,
-      userAgent,
-      leadSourceName,
-      isFirstVisit,
-      platformz,
-      country,
-    ) {
-      const rowTemplate = document.getElementById("userTemplate").content;
-      const tableBody = document.getElementById("tableBody");
-      // Clone and update the DOM
-      const newRow = document.importNode(rowTemplate, true);
-      newRow.querySelector(".currentURL").textContent = currentURL;
-      newRow.querySelector(".refferURL").textContent = referrerURL;
-      newRow.querySelector(".timestamp").textContent = timestamp;
-      newRow.querySelector(".utm_m").textContent = utmMedium || "null";
-      newRow.querySelector(".utm_s").textContent = utmSource || "null";
-      newRow.querySelector(".utm_camp").textContent = utmCamp || "null";
-      newRow.querySelector(".utm_term").textContent = utmTerm || "null";
-      newRow.querySelector(".utm_cont").textContent = utmCont || "null";
-      newRow.querySelector(".userAgent").textContent = userAgent;
-      newRow.querySelector(".lsn").textContent = leadSourceName || "null";
-      newRow.querySelector(".visit").textContent = isFirstVisit;
-      newRow.querySelector(".platform").textContent = platformz || "null";
-      newRow.querySelector(".country").textContent = country;
+    // Top Active pages BLOCK
+    const activePages = []; 
 
-      // Add to the DOM
-      tableBody.insertBefore(newRow, tableBody.firstChild);
+    function removeTopActivePages(url)
+    {
+      // NOTE, this function can be only called when the user is already added
+
+      activePages.forEach((page, index) => {
+        if(page.url === url){
+          page.user--;
+          if(page.user <= 0)
+          {
+            page.user = 0;
+            createOrUpdateRowTopActivePages(page.url, 0, index+1);
+
+          }
+          else
+          {
+            // Updating dom to the new number
+            createOrUpdateRowTopActivePages(page.url, page.user, index+1);
+          }
+        }
+      })
     }
+    
+    function createOrUpdateRowTopActivePages(url, newValue, rowIndex = -1) {
+      const table = document.getElementById("activePage");
+    
+      if (rowIndex >= 0 && rowIndex < table.rows.length) {
+        // Row with the URL exists, update it
+        const row = table.rows[rowIndex];
+        if (row.cells[1]) {
+          row.cells[1].textContent = newValue;
+        } else {
+          console.error("User count cell not found in the row.");
+        }
+      } else {
+        // Row with the URL doesn't exist, create a new one
+        const newRow = table.insertRow(rowIndex);
+        const urlCell = newRow.insertCell(0);
+        const userCountCell = newRow.insertCell(1);
+    
+        urlCell.textContent = url;
+        userCountCell.textContent = newValue;
+      }
+    }
+    
+    function addTopActivePages(url) {
+      // Formating the url
+      const content = "/" + url.split("/").slice(3).join("/");
+
+      if (url) {
+        // Creating the first object if it's not initialized already
+        if (activePages.length === 0) 
+        {
+          // Add the first user
+          activePages.push({
+            url: url,
+            user: 1,
+          });
+          createOrUpdateRowTopActivePages(url, 1);
+        } 
+        else
+        {
+          // Check if url already in table
+          activePages.forEach((page, index) => {
+            if (page.url === url)
+            {
+              page.user++;
+              createOrUpdateRowTopActivePages(url, page.user, index+1);
+            }
+            else
+            {
+              activePages.push({
+                url: url,
+                user: 1,
+              });
+              createOrUpdateRowTopActivePages(url, 1);
+            }
+          })
+        }
+      }
+    }
+    // ENDBLOCK
+
   </script>
+</html>
