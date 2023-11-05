@@ -204,11 +204,15 @@
         const data = JSON.parse(event.data);
 
         // Set count of users, regardless of the type of the message
+        // Updating userCount
         updateUserCount(data.currentCount);
 
-        if (data.msg && data.msg.type !== undefined && data.msg.type === "clientJoin") {
-          
-            data.msg.currentURL,
+        if (data.msg && data.msg.type !== undefined && data.msg.type === "clientJoin" )  {
+          // Adding data to widgets.
+          // Add data to Top Active Pages:
+          addTopActivePages(data.msg.currentURL);
+
+            /*data.msg.currentURL,
             data.msg.referrerURL,
             data.msg.timestamp,
             data.msg.utmMedium,
@@ -220,14 +224,15 @@
             data.msg.leadSourceName,
             data.msg.isFirstVisit,
             data.msg.platform,
-            data.msg.country
+            data.msg.country*/
           
         }
+
+        // TODO remove data
       } catch (error) {
         console.error("Error processing message:", error);
       }
     };
-​
 
     // RIGHT NOW BLOCK
     function updateUserCount(newCount) {
@@ -238,33 +243,22 @@
 
     // Top Active pages BLOCK
     const activePages = []; 
+    
 
-    function removeTopActivePages(url)
-    {
-      // NOTE, this function can be only called when the user is already added
 
-      activePages.forEach((page, index) => {
-        if(page.url === url){
-          page.user--;
-          if(page.user <= 0)
-          {
-            page.user = 0;
-            createOrUpdateRowTopActivePages(page.url, 0, index+1);
-
-          }
-          else
-          {
-            // Updating dom to the new number
-            createOrUpdateRowTopActivePages(page.url, page.user, index+1);
-          }
+    function createOrUpdate(url, newValue, id) {
+      const table = document.getElementById(id);
+    
+      // Find the row with the matching URL, if it exists
+      let rowIndex = -1;
+      for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].cells[0].textContent === url) {
+          rowIndex = i;
+          break;
         }
-      })
-    }
+      }
     
-    function createOrUpdateRowTopActivePages(url, newValue, rowIndex = -1) {
-      const table = document.getElementById("activePage");
-    
-      if (rowIndex >= 0 && rowIndex < table.rows.length) {
+      if (rowIndex >= 0) {
         // Row with the URL exists, update it
         const row = table.rows[rowIndex];
         if (row.cells[1]) {
@@ -274,7 +268,7 @@
         }
       } else {
         // Row with the URL doesn't exist, create a new one
-        const newRow = table.insertRow(rowIndex);
+        const newRow = table.insertRow();
         const urlCell = newRow.insertCell(0);
         const userCountCell = newRow.insertCell(1);
     
@@ -284,42 +278,54 @@
     }
     
     function addTopActivePages(url) {
-      // Formating the url
       const content = "/" + url.split("/").slice(3).join("/");
-
+    
       if (url) {
-        // Creating the first object if it's not initialized already
-        if (activePages.length === 0) 
-        {
-          // Add the first user
+        // Check if url already in table
+        let found = false; // Flag to check if the URL is found
+    
+        activePages.forEach((page, index) => {
+          if (page.url === content) {
+            page.user++;
+            createOrUpdate(content, page.user, "activePage", index + 1);
+            found = true; // Set the flag to true
+          }
+        });
+    
+        // If the URL wasn't found, add a new entry
+        if (!found) {
           activePages.push({
-            url: url,
+            url: content,
             user: 1,
           });
-          createOrUpdateRowTopActivePages(url, 1);
-        } 
-        else
-        {
-          // Check if url already in table
-          activePages.forEach((page, index) => {
-            if (page.url === url)
-            {
-              page.user++;
-              createOrUpdateRowTopActivePages(url, page.user, index+1);
-            }
-            else
-            {
-              activePages.push({
-                url: url,
-                user: 1,
-              });
-              createOrUpdateRowTopActivePages(url, 1);
-            }
-          })
+          createOrUpdate(content, 1, "activePage");
         }
       }
     }
-    // ENDBLOCK
+    
+    function removeTopActivePages(url) {
+      const content = "/" + url.split("/").slice(3).join("/");
+    
+      // Find the page with the matching URL
+      const index = activePages.findIndex((page) => page.url === content);
+    
+      if (index !== -1) {
+        const page = activePages[index];
+        page.user--;
+    
+        if (page.user <= 0) {
+          // If the user count is zero or less, remove the entry from the array
+          activePages.splice(index, 1);
+          // Remove the corresponding row from the table
+          const table = document.getElementById("activePage");
+          createOrUpdate(content, 0, "activePage", index + 1);
+        } else {
+          // Update the DOM with the new user count
+          createOrUpdate(content, page.user, "activePage", index + 1);
+        }
+      }
+    }
+    
 
   </script>
 </html>
