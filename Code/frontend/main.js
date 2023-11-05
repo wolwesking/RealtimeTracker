@@ -9,9 +9,9 @@ let country = "";
 const urlParams = new URLSearchParams(window.location.search);
 const utmSource = urlParams.get("utm_source");
 const utmMedium = urlParams.get("utm_medium");
-const utmCamp = urlParams.get('utm_campaign');
-const utmTerm = urlParams.get('utm_term');
-const utmContent = urlParams.get('utm_content');
+const utmCamp = urlParams.get("utm_campaign");
+const utmTerm = urlParams.get("utm_term");
+const utmContent = urlParams.get("utm_content");
 
 // Check for a meta tag with a specific name attribute
 const leadSourceInput = document.querySelector('input[name="lead_source"]');
@@ -46,32 +46,45 @@ if (userAgent.match("/Mobile/i")) {
 
 // Getting user's location
 
-fetch("http://ip-api.com/json/")
-  .then((response) => response.json())
-  .then((data) => {
-    country = data.country;
-    // DATASENDING
+const socket = new WebSocket("ws://localhost:8082");
+let dataToSend;
 
-    const dataToSend = {
-      type: "clientJoin",
-      currentURL,
-      referrerURL,
-      userAgent,
-      utmSource,
-      utmMedium,
-      utmCamp,
-      utmTerm,
-      utmContent,
-      timestamp,
-      leadSourceName,
-      isFirstVisit,
-      platform,
-      country,
-    };
-    const socket = new WebSocket("ws://localhost:8082");
+socket.addEventListener("open", (e) => {
+  fetch("http://ip-api.com/json/")
+    .then((response) => response.json())
+    .then((data) => {
+      country = data.country;
+      // DATASENDING
 
-    socket.addEventListener("open", (e) => {
+      dataToSend = {
+        currentURL,
+        referrerURL,
+        userAgent,
+        utmSource,
+        utmMedium,
+        utmCamp,
+        utmTerm,
+        utmContent,
+        timestamp,
+        leadSourceName,
+        isFirstVisit,
+        platform,
+        country,
+      };
+
       socket.send(JSON.stringify(dataToSend));
-    });
-  })
-  .catch((error) => console.error(error));
+    })
+    .catch((error) => console.error(error));
+});
+
+socket.addEventListener("message", (e) => {
+  if (e.data) {
+    const receivedMessage = JSON.parse(e.data); // Assuming the message is in JSON format
+    // Now you can work with the received message
+    if (receivedMessage === "requestOfData") {
+      console.log(dataToSend);
+      socket.send(JSON.stringify(dataToSend));
+    }
+    // You can also send a response if needed
+  }
+});

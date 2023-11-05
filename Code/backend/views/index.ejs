@@ -39,7 +39,7 @@
 
       <div class="widget" id="widget3">
         <h1>Top Referrals:</h1>
-        <table>
+        <table id="referralPage">
           <thead>
             <tr>
               <th>Source</th>
@@ -55,7 +55,7 @@
       <!-- User by Device Widget -->
       <div class="widget" id="widget4">
         <h1>Users by Device Type:</h1>
-        <table>
+        <table id="deviceTypeTable">
           <thead>
             <tr>
               <th>Device</th>
@@ -82,7 +82,7 @@
       <!-- UTM Widgets -->
       <div class="widget" id="widget5">
         <h1>UTM Source:</h1>
-        <table>
+        <table id="utmSourcePanel">
           <thead>
             <tr>
               <th>utm-name</th>
@@ -97,7 +97,7 @@
 
       <div class="widget" id="widget6">
         <h1>UTM Medium:</h1>
-        <table>
+        <table id="utmMediumPanel">
           <thead>
             <tr>
               <th>utm-name</th>
@@ -112,7 +112,7 @@
 
       <div class="widget" id="widget7">
         <h1>UTM Campaign:</h1>
-        <table>
+        <table id="utmCampaignPanel">
           <thead>
             <tr>
               <th>utm-name</th>
@@ -127,7 +127,7 @@
 
       <div class="widget" id="widget8">
         <h1>UTM Term:</h1>
-        <table>
+        <table id="utmTermPanel">
           <thead>
             <tr>
               <th>utm-name</th>
@@ -142,7 +142,7 @@
 
       <div class="widget" id="widget9">
         <h1>UTM Content:</h1>
-        <table>
+        <table id="utmContentPanel">
           <thead>
             <tr>
               <th>utm-name</th>
@@ -155,24 +155,10 @@
         </table>
       </div>
 
-      <div class="widget" id="widget10">
-        <h1>Country: </h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Country</th>
-              <th>sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Add rows for UTM Content data here -->
-          </tbody>
-        </table>
-      </div>
-
+      <!-- other widgets -->
       <div class="widget" id="widget11">
         <h1>Lead source name:</h1>
-        <table>
+        <table id="leadSourcePanel">
           <thead>
             <tr>
               <th>source</th>
@@ -185,7 +171,20 @@
         </table>
       </div>
 
-      
+      <div class="widget" id="widget10">
+        <h1>Country:</h1>
+        <table id="countryPanel">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows for UTM Content data here -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </body>
 
@@ -198,6 +197,7 @@
 
     // Connect to socket
     const socket = new WebSocket("ws://localhost:8082", "dashboard");
+
     // Add message
     socket.onmessage = (event) => {
       try {
@@ -207,28 +207,91 @@
         // Updating userCount
         updateUserCount(data.currentCount);
 
-        if (data.msg && data.msg.type !== undefined && data.msg.type === "clientJoin" )  {
+        if (data.msg && data.type !== undefined && data.type === "join") {
           // Adding data to widgets.
           // Add data to Top Active Pages:
-          addTopActivePages(data.msg.currentURL);
+          // TODO error fix: refresh counts as well
+          // TODO exclude dashboard from count
+          if (data.msg.currentURL !== "") {
+            addTopActivePages(data.msg.currentURL);
+          }
 
-            /*data.msg.currentURL,
-            data.msg.referrerURL,
-            data.msg.timestamp,
-            data.msg.utmMedium,
-            data.msg.utmSource,
-            data.msg.utmCamp,
-            data.msg.utmTerm,
-            data.msg.utmContent,
-            data.msg.userAgent,
-            data.msg.leadSourceName,
-            data.msg.isFirstVisit,
-            data.msg.platform,
-            data.msg.country*/
-          
+          if (data.msg.referralPage !== "") {
+            addTopReferralsPages(data.msg.referrerURL);
+          }
+
+          if (data.msg.platform !== "") {
+            if (data.msg.platform === "desktop") addDeviceType("Desktop");
+            if (data.msg.platform === "mobile") addDeviceType("Mobile");
+            if (data.msg.platform === "tablet") addDeviceType("Tablet");
+          }
+
+          if (data.msg.utmSource !== "") {
+            addUTMSource(data.msg.utmSource);
+          }
+
+          if (data.msg.utmMedium !== "") {
+            addUTMMedium(data.msg.utmMedium);
+          }
+
+          if (data.msg.utmCamp !== "") {
+            addUTMCampaign(data.msg.utmCamp);
+          }
+
+          if (data.msg.utmContent !== "") {
+            addUTMContent(data.msg.utmContent);
+          }
+
+          if (data.msg.utmTerm !== "") {
+            addUTMTerm(data.msg.utmTerm);
+          }
+
+          if (data.msg.leadSourceName !== "") {
+            addLeadSourceName(data.msg.leadSourceName);
+          }
+
+          if (data.msg.country !== "") {
+            addCountry(data.msg.country);
+          }
         }
 
-        // TODO remove data
+        if (data.msg && data.type !== undefined && data.type === "leave") {
+          // Handling leaving users
+          if(data.msg.currentURL !== "")
+            removeTopActivePages(data.msg.currentURL);
+
+          if (data.msg.referralPage !== "")
+            removeTopReferralPages(data.msg.referrerURL);
+
+          if (data.msg.platform !== "") {
+            if (data.msg.platform === "desktop") removeDeviceType("Desktop");
+            if (data.msg.platform === "mobile") removeDeviceType("Mobile");
+            if (data.msg.platform === "tablet") removeDeviceType("Tablet");
+          }
+
+          if (data.msg.utmSource !== "")
+            removeUTMSource(data.msg.utmSource);
+
+          if (data.msg.utmMedium !== "")
+            removeUTMMedium(data.msg.utmMedium);
+
+          if (data.msg.utmCamp !== "")
+            removeUTMCampaign(data.msg.utmCamp);
+
+          if (data.msg.utmContent !== "")
+            removeUTMContent(data.msg.utmContent);
+
+          if (data.msg.utmTerm !== "")
+            removeUTMTerm(data.msg.utmTerm);
+          
+          if(data.msg.leadSourceName !== "")
+            removeLeadSourceName(data.msg.leadSourceName);
+
+          if(data.msg.country !== "")
+            removeCountry(data.msg.country);
+
+        }
+        // TODO remove request and editing realtime data
       } catch (error) {
         console.error("Error processing message:", error);
       }
@@ -237,18 +300,15 @@
     // RIGHT NOW BLOCK
     function updateUserCount(newCount) {
       const userCountElement = document.getElementById("currentCount");
-      userCountElement.innerText = newCount || "no data";
+      userCountElement.innerText = newCount;
     }
     // ENDBLOCK
 
     // Top Active pages BLOCK
-    const activePages = []; 
-    
-
 
     function createOrUpdate(url, newValue, id) {
       const table = document.getElementById(id);
-    
+
       // Find the row with the matching URL, if it exists
       let rowIndex = -1;
       for (let i = 1; i < table.rows.length; i++) {
@@ -257,7 +317,7 @@
           break;
         }
       }
-    
+
       if (rowIndex >= 0) {
         // Row with the URL exists, update it
         const row = table.rows[rowIndex];
@@ -271,19 +331,80 @@
         const newRow = table.insertRow();
         const urlCell = newRow.insertCell(0);
         const userCountCell = newRow.insertCell(1);
-    
+
         urlCell.textContent = url;
         userCountCell.textContent = newValue;
       }
     }
-    
-    function addTopActivePages(url) {
-      const content = "/" + url.split("/").slice(3).join("/");
-    
+
+    const referralPage = [];
+
+    function addTopReferralsPages(url) {
+      const content = extractHostname(url);
+
       if (url) {
         // Check if url already in table
         let found = false; // Flag to check if the URL is found
+
+        referralPage.forEach((page, index) => {
+          if (page.url === content) {
+            page.user++;
+            createOrUpdate(content, page.user, "referralPage", index + 1);
+            found = true; // Set the flag to true
+          }
+        });
+
+        // If the URL wasn't found, add a new entry
+        if (!found) {
+          referralPage.push({
+            url: content,
+            user: 1,
+          });
+          createOrUpdate(content, 1, "referralPage");
+        }
+      }
+    }
+
+    function removeTopReferralPages(url) {
+      const content = extractHostname(url);
+
+      // Find the page with the matching URL
+      const index = referralPage.findIndex((page) => page.url === content);
+
+      if (index !== -1) {
+        const page = referralPage[index];
+        page.user--;
+
+        if (page.user <= 0) {
+          // If the user count is zero or less, remove the entry from the array
+          referralPage.splice(index, 1);
+          // Remove the corresponding row from the table
+          createOrUpdate(content, 0, "referralPage", index + 1);
+        } else {
+          // Update the DOM with the new user count
+          createOrUpdate(content, page.user, "referralPage", index + 1);
+        }
+      }
+    }
+
+    function extractHostname(url) {
+      const parts = url.split("/");
+      if (parts.length >= 3) {
+        return parts[2];
+      }
+      return null;
+    }
+
+    const activePages = [];
     
+    function addTopActivePages(url) {
+      const clean = url.split("?")[0];
+      const content = "/" + clean.split("/").slice(3).join("/");
+
+      if (url) {
+        // Check if url already in table
+        let found = false; // Flag to check if the URL is found
+
         activePages.forEach((page, index) => {
           if (page.url === content) {
             page.user++;
@@ -291,7 +412,7 @@
             found = true; // Set the flag to true
           }
         });
-    
+
         // If the URL wasn't found, add a new entry
         if (!found) {
           activePages.push({
@@ -302,22 +423,23 @@
         }
       }
     }
-    
+
     function removeTopActivePages(url) {
-      const content = "/" + url.split("/").slice(3).join("/");
-    
+      const clean = url.split("?")[0];
+      const content = "/" + clean.split("/").slice(3).join("/");
+      console.log(content);
+
       // Find the page with the matching URL
       const index = activePages.findIndex((page) => page.url === content);
-    
+
       if (index !== -1) {
         const page = activePages[index];
         page.user--;
-    
+
         if (page.user <= 0) {
           // If the user count is zero or less, remove the entry from the array
           activePages.splice(index, 1);
           // Remove the corresponding row from the table
-          const table = document.getElementById("activePage");
           createOrUpdate(content, 0, "activePage", index + 1);
         } else {
           // Update the DOM with the new user count
@@ -325,7 +447,347 @@
         }
       }
     }
-    
 
+    const deviceType = [
+      { device: "Desktop", number: 0 },
+      { device: "Mobile", number: 0 },
+      { device: "Tablet", number: 0 },
+    ];
+
+    function updateDeviceTable() {
+      const table = document.getElementById("deviceTypeTable");
+      const rows = table.getElementsByTagName("tr");
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const cells = row.getElementsByTagName("td");
+        if (cells.length === 2) {
+          const device = cells[0].textContent;
+          const deviceObj = deviceType.find((item) => item.device === device);
+          if (deviceObj) {
+            cells[1].textContent = deviceObj.number;
+          }
+        }
+      }
+    }
+
+    // Function to add a user to a device type
+    function addDeviceType(device) {
+      const deviceObj = deviceType.find((item) => item.device === device);
+      if (deviceObj) {
+        deviceObj.number++;
+        updateDeviceTable();
+      }
+    }
+
+    // Function to remove a user from a device type
+    function removeDeviceType(device) {
+      const deviceObj = deviceType.find((item) => item.device === device);
+      if (deviceObj && deviceObj.number > 0) {
+        deviceObj.number--;
+        updateDeviceTable();
+      }
+    }
+
+    const utmSources = [];
+
+    function addUTMSource(source) {
+      if (source) {
+        let found = false;
+
+        utmSources.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "utmSourcePanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          utmSources.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "utmSourcePanel");
+        }
+      }
+    }
+
+    function removeUTMSource(source) {
+      if (source) {
+        utmSources.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "utmSourcePanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "utmSourcePanel");
+            }
+          }
+        });
+      }
+    }
+
+    const utmMedium = [];
+
+    function addUTMMedium(source) {
+      if (source) {
+        let found = false;
+
+        utmMedium.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "utmMediumPanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          utmMedium.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "utmMediumPanel");
+        }
+      }
+    }
+
+    function removeUTMMedium(source) {
+      if (source) {
+        utmMedium.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "utmMediumPanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "utmMediumPanel");
+            }
+          }
+        });
+      }
+    }
+
+    const utmCampaign = [];
+
+    function addUTMCampaign(source) {
+      if (source) {
+        let found = false;
+
+        utmCampaign.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "utmCampaignPanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          utmCampaign.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "utmCampaignPanel");
+        }
+      }
+    }
+
+    function removeUTMCampaign(source) {
+      if (source) {
+        utmCampaign.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "utmCampaignPanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "utmCampaignPanel");
+            }
+          }
+        });
+      }
+    }
+
+    const utmTerm = [];
+
+    function addUTMTerm(source) {
+      if (source) {
+        let found = false;
+
+        utmTerm.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "utmTermPanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          utmTerm.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "utmTermPanel");
+        }
+      }
+    }
+
+    function removeUTMTerm(source) {
+      if (source) {
+        utmTerm.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "utmTermPanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "utmTermPanel");
+            }
+          }
+        });
+      }
+    }
+
+    const utmContent = [];
+
+    function addUTMContent(source) {
+      if (source) {
+        let found = false;
+
+        utmContent.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "utmContentPanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          utmContent.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "utmContentPanel");
+        }
+      }
+    }
+
+    function removeUTMContent(source) {
+      if (source) {
+        utmContent.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "utmContentPanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "utmContentPanel");
+            }
+          }
+        });
+      }
+    }
+
+    const leadSourceName = [];
+
+    function addLeadSourceName(source) {
+      if (source) {
+        let found = false;
+
+        leadSourceName.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "leadSourcePanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          leadSourceName.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "leadSourcePanel");
+        }
+      }
+    }
+
+    function removeLeadSourceName(source) {
+      if (source) {
+        leadSourceName.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "leadSourcePanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "leadSourcePanel");
+            }
+          }
+        });
+      }
+    }
+
+    const country = [];
+
+    function addCountry(source) {
+      if (source) {
+        let found = false;
+
+        country.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions++;
+            createOrUpdate(source, item.sessions, "countryPanel");
+            found = true;
+          }
+        });
+
+        if (!found) {
+          country.push({
+            source: source,
+            sessions: 1,
+          });
+          createOrUpdate(source, 1, "countryPanel");
+        }
+      }
+    }
+
+    function removeCountry(source) {
+      if (source) {
+        country.forEach((item, index) => {
+          if (item.source === source) {
+            item.sessions--;
+
+            if (item.sessions <= 0) {
+              item.sessions = 0;
+              createOrUpdate(source, 0, "countryPanel");
+              // You can also remove the entry from utmSources if needed
+              // utmSources.splice(index, 1);
+            } else {
+              createOrUpdate(source, item.sessions, "countryPanel");
+            }
+          }
+        });
+      }
+    }
   </script>
 </html>
