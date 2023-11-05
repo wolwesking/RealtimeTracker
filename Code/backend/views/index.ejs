@@ -189,9 +189,7 @@
   </body>
 
   <script>
-    // TODO realtime functionalities for all widgets in file
     // TODO create database and connect it with backend and frontend
-    // TODO add server logic to format this
     // TODO create safe authentication
     // TODO Database exporting as logs download
 
@@ -396,7 +394,7 @@
     }
 
     const activePages = [];
-    
+
     function addTopActivePages(url) {
       const clean = url.split("?")[0];
       const content = "/" + clean.split("/").slice(3).join("/");
