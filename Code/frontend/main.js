@@ -32,15 +32,19 @@ if (isFirstVisit) {
 }
 
 // Check user's platform
+// TODO fix this
 
-if (userAgent.match("/Mobile/i")) {
-  // User is on a mobile device
+if (
+  navigator.userAgent.match(/Android/i) ||
+  navigator.userAgent.match(/webOS/i) ||
+  navigator.userAgent.match(/iPhone/i) ||
+  navigator.userAgent.match(/iPad/i) ||
+  navigator.userAgent.match(/iPod/i) ||
+  navigator.userAgent.match(/BlackBerry/i) ||
+  navigator.userAgent.match(/Windows Phone/i)
+) {
   platform = "mobile";
-} else if (userAgent.match("/Tablet|iPad/i")) {
-  // User is on a tablet
-  platform = "tablet";
 } else {
-  // User is on a desktop
   platform = "desktop";
 }
 
@@ -50,31 +54,31 @@ const socket = new WebSocket("ws://localhost:8082");
 let dataToSend;
 
 socket.addEventListener("open", (e) => {
-  fetch("http://ip-api.com/json/")
-    .then((response) => response.json())
-    .then((data) => {
-      country = data.country;
-      // DATASENDING
+  // fetch("http://ip-api.com/json/")
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     country = data.country;
+  // DATASENDING
 
-      dataToSend = {
-        currentURL,
-        referrerURL,
-        userAgent,
-        utmSource,
-        utmMedium,
-        utmCamp,
-        utmTerm,
-        utmContent,
-        timestamp,
-        leadSourceName,
-        isFirstVisit,
-        platform,
-        country,
-      };
+  dataToSend = {
+    currentURL,
+    referrerURL,
+    userAgent,
+    utmSource,
+    utmMedium,
+    utmCamp,
+    utmTerm,
+    utmContent,
+    timestamp,
+    leadSourceName,
+    isFirstVisit,
+    platform,
+    country,
+  };
 
-      socket.send(JSON.stringify(dataToSend));
-    })
-    .catch((error) => console.error(error));
+  socket.send(JSON.stringify(dataToSend));
+  // })
+  // .catch((error) => console.error(error));
 });
 
 socket.addEventListener("message", (e) => {
