@@ -43,9 +43,9 @@ if (
   navigator.userAgent.match(/BlackBerry/i) ||
   navigator.userAgent.match(/Windows Phone/i)
 ) {
-  platform = "mobile";
+  platform = "Mobile";
 } else {
-  platform = "desktop";
+  platform = "Desktop";
 }
 
 // Getting user's location
@@ -86,7 +86,6 @@ socket.addEventListener("message", (e) => {
     const receivedMessage = JSON.parse(e.data); // Assuming the message is in JSON format
     // Now you can work with the received message
     if (receivedMessage === "requestOfData") {
-      console.log(dataToSend);
       socket.send(JSON.stringify(dataToSend));
     }
     // You can also send a response if needed

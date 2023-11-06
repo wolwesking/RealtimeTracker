@@ -28,7 +28,6 @@ function init(server, WebSocket) {
       // Check if dashboard connected
 
       msg = JSON.parse(message);
-      db.insertData(msg);
       // Making message to json
       const currentCount = viewCounter.getCounter();
 
