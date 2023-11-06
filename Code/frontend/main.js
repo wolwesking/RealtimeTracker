@@ -32,7 +32,6 @@ if (isFirstVisit) {
 }
 
 // Check user's platform
-// TODO fix this
 
 if (
   navigator.userAgent.match(/Android/i) ||

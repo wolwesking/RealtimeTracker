@@ -204,8 +204,6 @@
         if (data.msg && data.type !== undefined && data.type === "join") {
           // Adding data to widgets.
           // Add data to Top Active Pages:
-          // TODO error fix: refresh counts as well
-          // TODO exclude dashboard from count
           if (data.msg.currentURL !== "") {
             addTopActivePages(data.msg.currentURL);
           }
@@ -274,7 +272,6 @@
 
           if (data.msg.country !== "") removeCountry(data.msg.country);
         }
-        // TODO remove request and editing realtime data
       } catch (error) {
         console.error("Error processing message:", error);
       }
