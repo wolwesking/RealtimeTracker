@@ -1,7 +1,9 @@
 const viewCounter = require("../modules/userCounter");
+const db = require('./log')
 
 let msg;
-let cachedData = null; // New variable to store cached data
+let cachedData = null;
+let data2Log; // New variable to store cached data
 
 function init(server, WebSocket) {
   server.on("connection", (ws, request) => {
@@ -21,13 +23,14 @@ function init(server, WebSocket) {
       msg = JSON.parse(message);
       // Making message to JSON
       const currentCount = viewCounter.getCounter();
+      
 
       const newDataToSend = {
         currentCount: currentCount,
         type: "join",
         msg,
       };
-
+      data2Log = msg;
       // Sending Data to dashboard
       server.clients.forEach((client) => {
         if (
@@ -40,6 +43,7 @@ function init(server, WebSocket) {
             ws,
             newDataToSend,
           }; // Cache the data for the initial dashboard
+
         }
       });
     });
@@ -56,7 +60,8 @@ function init(server, WebSocket) {
           type: "leave",
           msg: msg, // Include the "leave" message data
         };
-
+        db.logData(msg);
+        
         server.clients.forEach((client) => {
           if (
             client.readyState === WebSocket.OPEN &&
