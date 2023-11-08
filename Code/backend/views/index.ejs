@@ -203,6 +203,7 @@
           // Updating userCount
           updateUserCount(data.currentCount);
 
+<<<<<<< HEAD
           if (data.msg && data.type !== undefined && data.type === "join") {
             // Adding data to widgets.
             // Add data to Top Active Pages:
@@ -245,6 +246,15 @@
             if (data.msg.country !== "") {
               addCountry(data.msg.country);
             }
+=======
+        if (data.msg && data.type !== undefined && data.type === "join") {
+          // Adding data to widgets.
+          // Add data to Top Active Pages:
+          // TODO error fix: refresh counts as well
+          // TODO exclude dashboard from count
+          if (data.msg.currentURL !== "") {
+            addTopActivePages(data.msg.currentURL);
+>>>>>>> parent of 9f888bc (todoMod)
           }
 
           if (data.msg && data.type !== undefined && data.type === "leave") {
@@ -280,10 +290,43 @@
         }
       };
 
+<<<<<<< HEAD
       // RIGHT NOW BLOCK
       function updateUserCount(newCount) {
         const userCountElement = document.getElementById("currentCount");
         userCountElement.innerText = newCount;
+=======
+        if (data.msg && data.type !== undefined && data.type === "leave") {
+          // Handling leaving users
+          if (data.msg.currentURL !== "")
+            removeTopActivePages(data.msg.currentURL);
+
+          if (data.msg.referralPage !== "")
+            removeTopReferralPages(data.msg.referrerURL);
+
+          if (data.msg.platform !== "") {
+            removeDeviceType(data.msg.platform);
+          }
+
+          if (data.msg.utmSource !== "") removeUTMSource(data.msg.utmSource);
+
+          if (data.msg.utmMedium !== "") removeUTMMedium(data.msg.utmMedium);
+
+          if (data.msg.utmCamp !== "") removeUTMCampaign(data.msg.utmCamp);
+
+          if (data.msg.utmContent !== "") removeUTMContent(data.msg.utmContent);
+
+          if (data.msg.utmTerm !== "") removeUTMTerm(data.msg.utmTerm);
+
+          if (data.msg.leadSourceName !== "")
+            removeLeadSourceName(data.msg.leadSourceName);
+
+          if (data.msg.country !== "") removeCountry(data.msg.country);
+        }
+        // TODO remove request and editing realtime data
+      } catch (error) {
+        console.error("Error processing message:", error);
+>>>>>>> parent of 9f888bc (todoMod)
       }
       // ENDBLOCK
 
