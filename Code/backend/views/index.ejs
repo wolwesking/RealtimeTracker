@@ -9,8 +9,7 @@
     <header>
       <h1>Dashboard</h1>
       <div id="userInfo">
-        <p>User's email</p>
-        <a href="#">Logout</a>
+        <a href="#">Download database</a>
       </div>
     </header>
     <!-- WIDGETS -->
@@ -186,587 +185,595 @@
 
   <script>
     // TODO create database and connect it with backend and frontend
-    // TODO create safe authentication
     // TODO Database exporting as logs download
 
-    // Connect to socket
-    const socket = new WebSocket("ws://localhost:8082", "dashboard");
+    // AUTHENTICATION
+    const userInput = prompt("Enter password:");
+    // HERE IS WHERE YOU CHANGE THE PASSOWRD !!!!!!!!!!!!!!!!!!!!!
+    if (userInput == "asd") {
+      // Connect to socket
+      const socket = new WebSocket("ws://localhost:8082", "dashboard");
 
-    // Add message
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+      // Add message
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
 
-        // Set count of users, regardless of the type of the message
-        // Updating userCount
-        updateUserCount(data.currentCount);
+          // Set count of users, regardless of the type of the message
+          // Updating userCount
+          updateUserCount(data.currentCount);
 
-        if (data.msg && data.type !== undefined && data.type === "join") {
-          // Adding data to widgets.
-          // Add data to Top Active Pages:
-          if (data.msg.currentURL !== "") {
-            addTopActivePages(data.msg.currentURL);
+          if (data.msg && data.type !== undefined && data.type === "join") {
+            // Adding data to widgets.
+            // Add data to Top Active Pages:
+            if (data.msg.currentURL !== "") {
+              addTopActivePages(data.msg.currentURL);
+            }
+
+            if (data.msg.referralPage !== "") {
+              addTopReferralsPages(data.msg.referrerURL);
+            }
+
+            if (data.msg.platform !== "") {
+              addDeviceType(data.msg.platform);
+            }
+
+            if (data.msg.utmSource !== "") {
+              addUTMSource(data.msg.utmSource);
+            }
+
+            if (data.msg.utmMedium !== "") {
+              addUTMMedium(data.msg.utmMedium);
+            }
+
+            if (data.msg.utmCamp !== "") {
+              addUTMCampaign(data.msg.utmCamp);
+            }
+
+            if (data.msg.utmContent !== "") {
+              addUTMContent(data.msg.utmContent);
+            }
+
+            if (data.msg.utmTerm !== "") {
+              addUTMTerm(data.msg.utmTerm);
+            }
+
+            if (data.msg.leadSourceName !== "") {
+              addLeadSourceName(data.msg.leadSourceName);
+            }
+
+            if (data.msg.country !== "") {
+              addCountry(data.msg.country);
+            }
           }
 
-          if (data.msg.referralPage !== "") {
-            addTopReferralsPages(data.msg.referrerURL);
-          }
+          if (data.msg && data.type !== undefined && data.type === "leave") {
+            // Handling leaving users
+            if (data.msg.currentURL !== "")
+              removeTopActivePages(data.msg.currentURL);
 
-          if (data.msg.platform !== "") {
-            addDeviceType(data.msg.platform);
-          }
+            if (data.msg.referralPage !== "")
+              removeTopReferralPages(data.msg.referrerURL);
 
-          if (data.msg.utmSource !== "") {
-            addUTMSource(data.msg.utmSource);
-          }
+            if (data.msg.platform !== "") {
+              removeDeviceType(data.msg.platform);
+            }
 
-          if (data.msg.utmMedium !== "") {
-            addUTMMedium(data.msg.utmMedium);
-          }
+            if (data.msg.utmSource !== "") removeUTMSource(data.msg.utmSource);
 
-          if (data.msg.utmCamp !== "") {
-            addUTMCampaign(data.msg.utmCamp);
-          }
+            if (data.msg.utmMedium !== "") removeUTMMedium(data.msg.utmMedium);
 
-          if (data.msg.utmContent !== "") {
-            addUTMContent(data.msg.utmContent);
-          }
+            if (data.msg.utmCamp !== "") removeUTMCampaign(data.msg.utmCamp);
 
-          if (data.msg.utmTerm !== "") {
-            addUTMTerm(data.msg.utmTerm);
-          }
+            if (data.msg.utmContent !== "")
+              removeUTMContent(data.msg.utmContent);
 
-          if (data.msg.leadSourceName !== "") {
-            addLeadSourceName(data.msg.leadSourceName);
-          }
+            if (data.msg.utmTerm !== "") removeUTMTerm(data.msg.utmTerm);
 
-          if (data.msg.country !== "") {
-            addCountry(data.msg.country);
+            if (data.msg.leadSourceName !== "")
+              removeLeadSourceName(data.msg.leadSourceName);
+
+            if (data.msg.country !== "") removeCountry(data.msg.country);
           }
+        } catch (error) {
+          console.error("Error processing message:", error);
         }
+      };
 
-        if (data.msg && data.type !== undefined && data.type === "leave") {
-          // Handling leaving users
-          if (data.msg.currentURL !== "")
-            removeTopActivePages(data.msg.currentURL);
-
-          if (data.msg.referralPage !== "")
-            removeTopReferralPages(data.msg.referrerURL);
-
-          if (data.msg.platform !== "") {
-            removeDeviceType(data.msg.platform);
-          }
-
-          if (data.msg.utmSource !== "") removeUTMSource(data.msg.utmSource);
-
-          if (data.msg.utmMedium !== "") removeUTMMedium(data.msg.utmMedium);
-
-          if (data.msg.utmCamp !== "") removeUTMCampaign(data.msg.utmCamp);
-
-          if (data.msg.utmContent !== "") removeUTMContent(data.msg.utmContent);
-
-          if (data.msg.utmTerm !== "") removeUTMTerm(data.msg.utmTerm);
-
-          if (data.msg.leadSourceName !== "")
-            removeLeadSourceName(data.msg.leadSourceName);
-
-          if (data.msg.country !== "") removeCountry(data.msg.country);
-        }
-      } catch (error) {
-        console.error("Error processing message:", error);
+      // RIGHT NOW BLOCK
+      function updateUserCount(newCount) {
+        const userCountElement = document.getElementById("currentCount");
+        userCountElement.innerText = newCount;
       }
-    };
+      // ENDBLOCK
 
-    // RIGHT NOW BLOCK
-    function updateUserCount(newCount) {
-      const userCountElement = document.getElementById("currentCount");
-      userCountElement.innerText = newCount;
-    }
-    // ENDBLOCK
+      // Top Active pages BLOCK
 
-    // Top Active pages BLOCK
+      function createOrUpdate(url, newValue, id) {
+        const table = document.getElementById(id);
 
-    function createOrUpdate(url, newValue, id) {
-      const table = document.getElementById(id);
-
-      // Find the row with the matching URL, if it exists
-      let rowIndex = -1;
-      for (let i = 1; i < table.rows.length; i++) {
-        if (table.rows[i].cells[0].textContent === url) {
-          rowIndex = i;
-          break;
+        // Find the row with the matching URL, if it exists
+        let rowIndex = -1;
+        for (let i = 1; i < table.rows.length; i++) {
+          if (table.rows[i].cells[0].textContent === url) {
+            rowIndex = i;
+            break;
+          }
         }
-      }
 
-      if (rowIndex >= 0) {
-        // Row with the URL exists, update it
-        const row = table.rows[rowIndex];
-        if (row.cells[1]) {
-          row.cells[1].textContent = newValue;
+        if (rowIndex >= 0) {
+          // Row with the URL exists, update it
+          const row = table.rows[rowIndex];
+          if (row.cells[1]) {
+            row.cells[1].textContent = newValue;
+          } else {
+            console.error("User count cell not found in the row.");
+          }
         } else {
-          console.error("User count cell not found in the row.");
+          // Row with the URL doesn't exist, create a new one
+          const newRow = table.insertRow();
+          const urlCell = newRow.insertCell(0);
+          const userCountCell = newRow.insertCell(1);
+
+          urlCell.textContent = url;
+          userCountCell.textContent = newValue;
         }
-      } else {
-        // Row with the URL doesn't exist, create a new one
-        const newRow = table.insertRow();
-        const urlCell = newRow.insertCell(0);
-        const userCountCell = newRow.insertCell(1);
-
-        urlCell.textContent = url;
-        userCountCell.textContent = newValue;
       }
-    }
 
-    const referralPage = [];
+      const referralPage = [];
 
-    function addTopReferralsPages(url) {
-      const content = extractHostname(url);
+      function addTopReferralsPages(url) {
+        const content = extractHostname(url);
 
-      if (url) {
-        // Check if url already in table
-        let found = false; // Flag to check if the URL is found
+        if (url) {
+          // Check if url already in table
+          let found = false; // Flag to check if the URL is found
 
-        referralPage.forEach((page, index) => {
-          if (page.url === content) {
-            page.user++;
+          referralPage.forEach((page, index) => {
+            if (page.url === content) {
+              page.user++;
+              createOrUpdate(content, page.user, "referralPage", index + 1);
+              found = true; // Set the flag to true
+            }
+          });
+
+          // If the URL wasn't found, add a new entry
+          if (!found) {
+            referralPage.push({
+              url: content,
+              user: 1,
+            });
+            createOrUpdate(content, 1, "referralPage");
+          }
+        }
+      }
+
+      function removeTopReferralPages(url) {
+        const content = extractHostname(url);
+
+        // Find the page with the matching URL
+        const index = referralPage.findIndex((page) => page.url === content);
+
+        if (index !== -1) {
+          const page = referralPage[index];
+          page.user--;
+
+          if (page.user <= 0) {
+            // If the user count is zero or less, remove the entry from the array
+            referralPage.splice(index, 1);
+            // Remove the corresponding row from the table
+            createOrUpdate(content, 0, "referralPage", index + 1);
+          } else {
+            // Update the DOM with the new user count
             createOrUpdate(content, page.user, "referralPage", index + 1);
-            found = true; // Set the flag to true
           }
-        });
+        }
+      }
 
-        // If the URL wasn't found, add a new entry
-        if (!found) {
-          referralPage.push({
-            url: content,
-            user: 1,
+      function extractHostname(url) {
+        const parts = url.split("/");
+        if (parts.length >= 3) {
+          return parts[2];
+        }
+        return null;
+      }
+
+      const activePages = [];
+
+      function addTopActivePages(url) {
+        const clean = url.split("?")[0];
+        const content = "/" + clean.split("/").slice(3).join("/");
+
+        if (url) {
+          // Check if url already in table
+          let found = false; // Flag to check if the URL is found
+
+          activePages.forEach((page, index) => {
+            if (page.url === content) {
+              page.user++;
+              createOrUpdate(content, page.user, "activePage", index + 1);
+              found = true; // Set the flag to true
+            }
           });
-          createOrUpdate(content, 1, "referralPage");
+
+          // If the URL wasn't found, add a new entry
+          if (!found) {
+            activePages.push({
+              url: content,
+              user: 1,
+            });
+            createOrUpdate(content, 1, "activePage");
+          }
         }
       }
-    }
 
-    function removeTopReferralPages(url) {
-      const content = extractHostname(url);
+      function removeTopActivePages(url) {
+        const clean = url.split("?")[0];
+        const content = "/" + clean.split("/").slice(3).join("/");
 
-      // Find the page with the matching URL
-      const index = referralPage.findIndex((page) => page.url === content);
+        // Find the page with the matching URL
+        const index = activePages.findIndex((page) => page.url === content);
 
-      if (index !== -1) {
-        const page = referralPage[index];
-        page.user--;
+        if (index !== -1) {
+          const page = activePages[index];
+          page.user--;
 
-        if (page.user <= 0) {
-          // If the user count is zero or less, remove the entry from the array
-          referralPage.splice(index, 1);
-          // Remove the corresponding row from the table
-          createOrUpdate(content, 0, "referralPage", index + 1);
-        } else {
-          // Update the DOM with the new user count
-          createOrUpdate(content, page.user, "referralPage", index + 1);
-        }
-      }
-    }
-
-    function extractHostname(url) {
-      const parts = url.split("/");
-      if (parts.length >= 3) {
-        return parts[2];
-      }
-      return null;
-    }
-
-    const activePages = [];
-
-    function addTopActivePages(url) {
-      const clean = url.split("?")[0];
-      const content = "/" + clean.split("/").slice(3).join("/");
-
-      if (url) {
-        // Check if url already in table
-        let found = false; // Flag to check if the URL is found
-
-        activePages.forEach((page, index) => {
-          if (page.url === content) {
-            page.user++;
+          if (page.user <= 0) {
+            // If the user count is zero or less, remove the entry from the array
+            activePages.splice(index, 1);
+            // Remove the corresponding row from the table
+            createOrUpdate(content, 0, "activePage", index + 1);
+          } else {
+            // Update the DOM with the new user count
             createOrUpdate(content, page.user, "activePage", index + 1);
-            found = true; // Set the flag to true
-          }
-        });
-
-        // If the URL wasn't found, add a new entry
-        if (!found) {
-          activePages.push({
-            url: content,
-            user: 1,
-          });
-          createOrUpdate(content, 1, "activePage");
-        }
-      }
-    }
-
-    function removeTopActivePages(url) {
-      const clean = url.split("?")[0];
-      const content = "/" + clean.split("/").slice(3).join("/");
-
-      // Find the page with the matching URL
-      const index = activePages.findIndex((page) => page.url === content);
-
-      if (index !== -1) {
-        const page = activePages[index];
-        page.user--;
-
-        if (page.user <= 0) {
-          // If the user count is zero or less, remove the entry from the array
-          activePages.splice(index, 1);
-          // Remove the corresponding row from the table
-          createOrUpdate(content, 0, "activePage", index + 1);
-        } else {
-          // Update the DOM with the new user count
-          createOrUpdate(content, page.user, "activePage", index + 1);
-        }
-      }
-    }
-
-    const deviceType = [
-      { device: "Desktop", number: 0 },
-      { device: "Mobile", number: 0 },
-      { device: "Tablet", number: 0 },
-    ];
-
-    function updateDeviceTable() {
-      const table = document.getElementById("deviceTypeTable");
-      const rows = table.getElementsByTagName("tr");
-
-      for (let i = 1; i < rows.length; i++) {
-        const row = rows[i];
-        const cells = row.getElementsByTagName("td");
-        if (cells.length === 2) {
-          const device = cells[0].textContent;
-          const deviceObj = deviceType.find((item) => item.device === device);
-          if (deviceObj) {
-            cells[1].textContent = deviceObj.number;
           }
         }
       }
-    }
 
-    // Function to add a user to a device type
-    function addDeviceType(device) {
-      const deviceObj = deviceType.find((item) => item.device === device);
-      if (deviceObj) {
-        deviceObj.number++;
-        updateDeviceTable();
-      }
-    }
+      const deviceType = [
+        { device: "Desktop", number: 0 },
+        { device: "Mobile", number: 0 },
+        { device: "Tablet", number: 0 },
+      ];
 
-    // Function to remove a user from a device type
-    function removeDeviceType(device) {
-      const deviceObj = deviceType.find((item) => item.device === device);
-      if (deviceObj && deviceObj.number > 0) {
-        deviceObj.number--;
-        updateDeviceTable();
-      }
-    }
+      function updateDeviceTable() {
+        const table = document.getElementById("deviceTypeTable");
+        const rows = table.getElementsByTagName("tr");
 
-    const utmSources = [];
-
-    function addUTMSource(source) {
-      if (source) {
-        let found = false;
-
-        utmSources.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "utmSourcePanel");
-            found = true;
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const cells = row.getElementsByTagName("td");
+          if (cells.length === 2) {
+            const device = cells[0].textContent;
+            const deviceObj = deviceType.find((item) => item.device === device);
+            if (deviceObj) {
+              cells[1].textContent = deviceObj.number;
+            }
           }
-        });
-
-        if (!found) {
-          utmSources.push({
-            source: source,
-            sessions: 1,
-          });
-          createOrUpdate(source, 1, "utmSourcePanel");
         }
       }
-    }
 
-    function removeUTMSource(source) {
-      if (source) {
-        utmSources.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
+      // Function to add a user to a device type
+      function addDeviceType(device) {
+        const deviceObj = deviceType.find((item) => item.device === device);
+        if (deviceObj) {
+          deviceObj.number++;
+          updateDeviceTable();
+        }
+      }
 
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "utmSourcePanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
+      // Function to remove a user from a device type
+      function removeDeviceType(device) {
+        const deviceObj = deviceType.find((item) => item.device === device);
+        if (deviceObj && deviceObj.number > 0) {
+          deviceObj.number--;
+          updateDeviceTable();
+        }
+      }
+
+      const utmSources = [];
+
+      function addUTMSource(source) {
+        if (source) {
+          let found = false;
+
+          utmSources.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
               createOrUpdate(source, item.sessions, "utmSourcePanel");
+              found = true;
             }
-          }
-        });
-      }
-    }
-
-    const utmMedium = [];
-
-    function addUTMMedium(source) {
-      if (source) {
-        let found = false;
-
-        utmMedium.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "utmMediumPanel");
-            found = true;
-          }
-        });
-
-        if (!found) {
-          utmMedium.push({
-            source: source,
-            sessions: 1,
           });
-          createOrUpdate(source, 1, "utmMediumPanel");
+
+          if (!found) {
+            utmSources.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "utmSourcePanel");
+          }
         }
       }
-    }
 
-    function removeUTMMedium(source) {
-      if (source) {
-        utmMedium.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
+      function removeUTMSource(source) {
+        if (source) {
+          utmSources.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
 
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "utmMediumPanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "utmSourcePanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "utmSourcePanel");
+              }
+            }
+          });
+        }
+      }
+
+      const utmMedium = [];
+
+      function addUTMMedium(source) {
+        if (source) {
+          let found = false;
+
+          utmMedium.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
               createOrUpdate(source, item.sessions, "utmMediumPanel");
+              found = true;
             }
-          }
-        });
-      }
-    }
-
-    const utmCampaign = [];
-
-    function addUTMCampaign(source) {
-      if (source) {
-        let found = false;
-
-        utmCampaign.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "utmCampaignPanel");
-            found = true;
-          }
-        });
-
-        if (!found) {
-          utmCampaign.push({
-            source: source,
-            sessions: 1,
           });
-          createOrUpdate(source, 1, "utmCampaignPanel");
+
+          if (!found) {
+            utmMedium.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "utmMediumPanel");
+          }
         }
       }
-    }
 
-    function removeUTMCampaign(source) {
-      if (source) {
-        utmCampaign.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
+      function removeUTMMedium(source) {
+        if (source) {
+          utmMedium.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
 
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "utmCampaignPanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "utmMediumPanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "utmMediumPanel");
+              }
+            }
+          });
+        }
+      }
+
+      const utmCampaign = [];
+
+      function addUTMCampaign(source) {
+        if (source) {
+          let found = false;
+
+          utmCampaign.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
               createOrUpdate(source, item.sessions, "utmCampaignPanel");
+              found = true;
             }
-          }
-        });
-      }
-    }
-
-    const utmTerm = [];
-
-    function addUTMTerm(source) {
-      if (source) {
-        let found = false;
-
-        utmTerm.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "utmTermPanel");
-            found = true;
-          }
-        });
-
-        if (!found) {
-          utmTerm.push({
-            source: source,
-            sessions: 1,
           });
-          createOrUpdate(source, 1, "utmTermPanel");
+
+          if (!found) {
+            utmCampaign.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "utmCampaignPanel");
+          }
         }
       }
-    }
 
-    function removeUTMTerm(source) {
-      if (source) {
-        utmTerm.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
+      function removeUTMCampaign(source) {
+        if (source) {
+          utmCampaign.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
 
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "utmTermPanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "utmCampaignPanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "utmCampaignPanel");
+              }
+            }
+          });
+        }
+      }
+
+      const utmTerm = [];
+
+      function addUTMTerm(source) {
+        if (source) {
+          let found = false;
+
+          utmTerm.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
               createOrUpdate(source, item.sessions, "utmTermPanel");
+              found = true;
             }
-          }
-        });
-      }
-    }
-
-    const utmContent = [];
-
-    function addUTMContent(source) {
-      if (source) {
-        let found = false;
-
-        utmContent.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "utmContentPanel");
-            found = true;
-          }
-        });
-
-        if (!found) {
-          utmContent.push({
-            source: source,
-            sessions: 1,
           });
-          createOrUpdate(source, 1, "utmContentPanel");
+
+          if (!found) {
+            utmTerm.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "utmTermPanel");
+          }
         }
       }
-    }
 
-    function removeUTMContent(source) {
-      if (source) {
-        utmContent.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
+      function removeUTMTerm(source) {
+        if (source) {
+          utmTerm.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
 
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "utmContentPanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "utmTermPanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "utmTermPanel");
+              }
+            }
+          });
+        }
+      }
+
+      const utmContent = [];
+
+      function addUTMContent(source) {
+        if (source) {
+          let found = false;
+
+          utmContent.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
               createOrUpdate(source, item.sessions, "utmContentPanel");
+              found = true;
             }
-          }
-        });
-      }
-    }
-
-    const leadSourceName = [];
-
-    function addLeadSourceName(source) {
-      if (source) {
-        let found = false;
-
-        leadSourceName.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "leadSourcePanel");
-            found = true;
-          }
-        });
-
-        if (!found) {
-          leadSourceName.push({
-            source: source,
-            sessions: 1,
           });
-          createOrUpdate(source, 1, "leadSourcePanel");
+
+          if (!found) {
+            utmContent.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "utmContentPanel");
+          }
         }
       }
-    }
 
-    function removeLeadSourceName(source) {
-      if (source) {
-        leadSourceName.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
+      function removeUTMContent(source) {
+        if (source) {
+          utmContent.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
 
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "leadSourcePanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "utmContentPanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "utmContentPanel");
+              }
+            }
+          });
+        }
+      }
+
+      const leadSourceName = [];
+
+      function addLeadSourceName(source) {
+        if (source) {
+          let found = false;
+
+          leadSourceName.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
               createOrUpdate(source, item.sessions, "leadSourcePanel");
+              found = true;
             }
-          }
-        });
-      }
-    }
-
-    const country = [];
-
-    function addCountry(source) {
-      if (source) {
-        let found = false;
-
-        country.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions++;
-            createOrUpdate(source, item.sessions, "countryPanel");
-            found = true;
-          }
-        });
-
-        if (!found) {
-          country.push({
-            source: source,
-            sessions: 1,
           });
-          createOrUpdate(source, 1, "countryPanel");
+
+          if (!found) {
+            leadSourceName.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "leadSourcePanel");
+          }
+        }
+      }
+
+      function removeLeadSourceName(source) {
+        if (source) {
+          leadSourceName.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
+
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "leadSourcePanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "leadSourcePanel");
+              }
+            }
+          });
+        }
+      }
+
+      const country = [];
+
+      function addCountry(source) {
+        if (source) {
+          let found = false;
+
+          country.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions++;
+              createOrUpdate(source, item.sessions, "countryPanel");
+              found = true;
+            }
+          });
+
+          if (!found) {
+            country.push({
+              source: source,
+              sessions: 1,
+            });
+            createOrUpdate(source, 1, "countryPanel");
+          }
+        }
+      }
+
+      function removeCountry(source) {
+        if (source) {
+          country.forEach((item, index) => {
+            if (item.source === source) {
+              item.sessions--;
+
+              if (item.sessions <= 0) {
+                item.sessions = 0;
+                createOrUpdate(source, 0, "countryPanel");
+                // You can also remove the entry from utmSources if needed
+                // utmSources.splice(index, 1);
+              } else {
+                createOrUpdate(source, item.sessions, "countryPanel");
+              }
+            }
+          });
         }
       }
     }
-
-    function removeCountry(source) {
-      if (source) {
-        country.forEach((item, index) => {
-          if (item.source === source) {
-            item.sessions--;
-
-            if (item.sessions <= 0) {
-              item.sessions = 0;
-              createOrUpdate(source, 0, "countryPanel");
-              // You can also remove the entry from utmSources if needed
-              // utmSources.splice(index, 1);
-            } else {
-              createOrUpdate(source, item.sessions, "countryPanel");
-            }
-          }
-        });
-      }
+    else{
+      window.location.href = "/";
     }
   </script>
 </html>
